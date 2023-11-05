@@ -1,0 +1,183 @@
+import java.util.Scanner;
+
+public class Exam02FishingCompetition {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        int dimensions = Integer.parseInt(scanner.nextLine());
+
+        String[][] matrix = new String[dimensions][dimensions];
+
+        int shipRow = 0;
+        int shipCol = 0;
+
+        int totalFishCaught = 0;
+        boolean hasFallen = false;
+
+        for (int row = 0; row < dimensions; row++) {
+            String currentRow = scanner.nextLine();
+            for (int col = 0; col < dimensions; col++) {
+                matrix[row][col] = String.valueOf(currentRow.charAt(col));
+
+                if (currentRow.charAt(col) == 'S') {
+                    shipRow = row;
+                    shipCol = col;
+                   matrix[shipRow][shipCol] = "-";
+                }
+
+
+            }
+        }
+
+        while (true){
+            String command = scanner.nextLine();
+
+            if (command.equals("up")){
+                if (shipRow-1 >=0){
+                    if (!matrix[shipRow-1][shipCol].equals("W")&& !matrix[shipRow-1][shipCol].equals("-")){
+                        int tonsOfFish = Integer.parseInt(matrix[shipRow - 1][shipCol]);
+                        totalFishCaught += tonsOfFish;
+                        matrix[shipRow-1][shipCol]="-";
+                        shipRow--;
+                    }else if(matrix[shipRow-1][shipCol].equals("-")){
+                        shipRow--;
+                        continue;
+                    }else{
+                        if (matrix[shipRow][shipCol].equals("W")){
+                            System.out.printf("You fell into a whirlpool! The ship sank and you lost the fish you caught. Last coordinates of the ship: [%d,%d]%n",shipRow,shipCol);
+                            hasFallen=true;
+                            break;
+                        }
+                    }
+                }else {
+                    shipRow=dimensions-1;
+                    if (!matrix[shipRow][shipCol].equals("W")&& !matrix[shipRow][shipCol].equals("-")){
+                        int tonsOfFish = Integer.parseInt(matrix[shipRow][shipCol]);
+                        totalFishCaught += tonsOfFish;
+                        matrix[shipRow][shipCol]="-";
+
+                    }else if(matrix[shipRow][shipCol].equals("-")){
+                        continue;
+                    }
+                }
+
+            }
+            if (command.equals("down")){
+               if (shipRow+1<dimensions){
+                   if (!matrix[shipRow+1][shipCol].equals("W")&& !matrix[shipRow+1][shipCol].equals("-")){
+                       int tonsOfFish = Integer.parseInt(matrix[shipRow + 1][shipCol]);
+                       totalFishCaught += tonsOfFish;
+                       matrix[shipRow+1][shipCol]="-";
+                       shipRow++;
+                   }else if(matrix[shipRow+1][shipCol].equals("-")){
+                       shipRow++;
+                       continue;
+                   }else{
+                       if (matrix[shipRow+1][shipCol].equals("W")){
+                           System.out.printf("You fell into a whirlpool! The ship sank and you lost the fish you caught. Last coordinates of the ship: [%d,%d]%n",shipRow+1,shipCol);
+                           hasFallen=true;
+                           break;
+                       }
+                   }
+                }else {
+                   shipRow=0;
+                   if (!matrix[shipRow][shipCol].equals("W")&& !matrix[shipRow][shipCol].equals("-")){
+                       int tonsOfFish = Integer.parseInt(matrix[shipRow][shipCol]);
+                       totalFishCaught += tonsOfFish;
+                       matrix[shipRow][shipCol]="-";
+
+                   }else if(matrix[shipRow][shipCol].equals("-")){
+
+                       continue;
+                   }
+               }
+
+            }
+            if (command.equals("right")){
+                if (shipCol+1<dimensions){
+                    if (!matrix[shipRow][shipCol+1].equals("W")&& !matrix[shipRow][shipCol+1].equals("-")){
+                        int tonsOfFish = Integer.parseInt(matrix[shipRow][shipCol+1]);
+                        totalFishCaught += tonsOfFish;
+                        matrix[shipRow][shipCol+1]="-";
+                        shipCol++;
+                    }else if(matrix[shipRow][shipCol+1].equals("-")){
+                        shipCol++;
+                        continue;
+                    }
+                }else{
+                    shipCol=0;
+                    if (!matrix[shipRow][shipCol].equals("W")&& !matrix[shipRow][shipCol].equals("-")){
+                        int tonsOfFish = Integer.parseInt(matrix[shipRow][shipCol]);
+                        totalFishCaught += tonsOfFish;
+                        matrix[shipRow][shipCol]="-";
+
+                    }else if(matrix[shipRow][shipCol].equals("-")){
+                        continue;
+                    }
+
+                }
+
+            }
+            if (command.equals("left")){
+                if (shipCol-1>=0){
+                    if (!matrix[shipRow][shipCol-1].equals("W")&& !matrix[shipRow][shipCol-1].equals("-")){
+                        int tonsOfFish = Integer.parseInt(matrix[shipRow][shipCol-1]);
+                        totalFishCaught += tonsOfFish;
+                        matrix[shipRow][shipCol-1]="-";
+                        shipCol--;
+                    }else if(matrix[shipRow][shipCol-1].equals("-")){
+                        shipCol--;
+                        continue;
+                    }
+
+                }else{
+                    shipCol=dimensions-1;
+                    if (!matrix[shipRow][shipCol].equals("W")&& !matrix[shipRow][shipCol].equals("-")){
+                        int tonsOfFish = Integer.parseInt(matrix[shipRow][shipCol]);
+                        totalFishCaught += tonsOfFish;
+                        matrix[shipRow][shipCol]="-";
+
+                    }else if(matrix[shipRow][shipCol].equals("-")){
+                        continue;
+                    }
+                }
+
+            }
+
+            if (matrix[shipRow][shipCol].equals("W")){
+                System.out.printf("You fell into a whirlpool! The ship sank and you lost the fish you caught. Last coordinates of the ship: [%d,%d]%n",shipRow,shipCol);
+                hasFallen=true;
+                break;
+            }
+            if (hasFallen){
+                break;
+            }
+
+            if (command.equals("collect the nets")){
+                matrix[shipRow][shipCol] = "S";
+                if (totalFishCaught>=20){
+                    System.out.println("Success! You managed to reach the quota!");
+                }else{
+                    System.out.printf("You didn't catch enough fish and didn't reach the quota! ");
+                    System.out.printf("You need %d tons of fish more.%n", 20-totalFishCaught);
+                }
+
+                break;
+            }
+        }
+        if (totalFishCaught>0 && !hasFallen){
+            System.out.printf("Amount of fish caught: %d tons.%n",totalFishCaught);
+        }
+        if (!hasFallen){
+            for (int row = 0; row < dimensions; row++) {
+                for (int col = 0; col < dimensions; col++) {
+                    System.out.print(matrix[row][col]);
+                }
+                System.out.println();
+
+            }
+        }
+
+    }
+
+}
