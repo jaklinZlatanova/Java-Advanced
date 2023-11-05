@@ -1,0 +1,125 @@
+import java.util.Arrays;
+import java.util.Scanner;
+
+public class P02MouseInTheKitchen {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        String[] dimensions = scanner.nextLine().split(",");
+        int rows = Integer.parseInt(dimensions[0]);
+        int cols = Integer.parseInt(dimensions[1]);
+
+        String[][] cupboard = new String[rows][cols];
+
+        int mouseRow = 0;
+        int mouseCol = 0;
+        int totalCheeseNumber = 0;
+
+
+        for (int row = 0; row < rows; row++) {
+            String currentRow = scanner.nextLine();
+            for (int col = 0; col < cols; col++) {
+                cupboard[row][col] = String.valueOf(currentRow.charAt(col));
+
+                if (currentRow.charAt(col) == 'M') {
+                    mouseRow = row;
+                    mouseCol = col;
+                    cupboard[mouseRow][mouseCol] = "*";
+                }
+                if (cupboard[row][col].equals("C")) {
+                    totalCheeseNumber++;
+                }
+            }
+        }
+
+        while (true) {
+            String command = scanner.nextLine();
+            if (command.equals("up")) {
+                if (mouseRow - 1 >= 0) {
+                    if (cupboard[mouseRow - 1][mouseCol].equals("@")) {
+                        continue;
+                    } else {
+                        cupboard[mouseRow][mouseCol] = "*";
+                        mouseRow--;
+                    }
+                } else {
+                    System.out.println("No more cheese for tonight!");
+                    break;
+                }
+            }
+            if (command.equals("down")) {
+                if (mouseRow + 1 < cupboard.length) {
+                    if (cupboard[mouseRow + 1][mouseCol].equals("@")) {
+                        continue;
+                    } else {
+                        cupboard[mouseRow][mouseCol] = "*";
+                        mouseRow++;
+                    }
+                } else {
+                    System.out.println("No more cheese for tonight!");
+                    break;
+                }
+            }
+            if (command.equals("right")) {
+                if (mouseCol + 1 < cupboard[mouseRow].length) {
+                    if (cupboard[mouseRow][mouseCol + 1].equals("@")) {
+                        continue;
+                    } else {
+                        cupboard[mouseRow][mouseCol] = "*";
+                        mouseCol++;
+                    }
+                } else {
+                    System.out.println("No more cheese for tonight!");
+                    break;
+                }
+            }
+            if (command.equals("left")) {
+                if (mouseCol - 1 >= 0) {
+                    if (cupboard[mouseRow][mouseCol - 1].equals("@")) {
+                        continue;
+                    } else {
+                        cupboard[mouseRow][mouseCol] = "*";
+                        mouseCol--;
+                    }
+                } else {
+                    System.out.println("No more cheese for tonight!");
+                    break;
+                }
+            }
+            if (cupboard[mouseRow][mouseCol].equals("C")) {
+                totalCheeseNumber--;
+                cupboard[mouseRow][mouseCol] = "*";
+                if (totalCheeseNumber == 0) {
+                    cupboard[mouseRow][mouseCol] = "M";
+                    System.out.println("Happy mouse! All the cheese is eaten, good night!");
+                    break;
+                }
+                continue;
+            }
+            if (cupboard[mouseRow][mouseCol].equals("T")) {
+                cupboard[mouseRow][mouseCol]="M";
+                System.out.println("Mouse is trapped!");
+                break;
+            }
+            cupboard[mouseRow][mouseCol] = "M";
+
+            if (command.equals("danger")) {
+                System.out.println("Mouse will come back later!");
+                break;
+            }
+        }
+
+        printMatrix(cupboard);
+    }
+
+    private static void printMatrix(String[][] matrix) {
+        for (int row = 0; row < matrix.length; row++) {
+            for (int col = 0; col < matrix[row].length; col++) {
+                System.out.print(matrix[row][col]);
+            }
+            System.out.println();
+
+        }
+    }
+
+}
