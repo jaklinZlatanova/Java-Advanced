@@ -1,0 +1,65 @@
+import java.util.*;
+
+public class Exam01OffroadChallenge {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        String initialFuelLine = scanner.nextLine();
+        String consumptionIndex = scanner.nextLine();
+        String fuelLine = scanner.nextLine();
+
+        Queue<Integer> consumption = new ArrayDeque<>();
+        Stack<Integer> fuel = new Stack<>();
+        List<Integer> neededFuelList = new ArrayList<>();
+
+        Arrays.stream(consumptionIndex.split("\\s+"))
+                .map(Integer::parseInt)
+                .forEach(consumption::offer);
+        Arrays.stream(initialFuelLine.split("\\s+"))
+                .map(Integer::parseInt)
+                .forEach(fuel::push);
+        Arrays.stream(fuelLine.split("\\s+"))
+                .map(Integer::parseInt)
+                .forEach(neededFuelList::add);
+
+        int reachedAltitudes = 0;
+        List<String> printList = new ArrayList<>();
+
+
+
+        for (int i = 0; i < 4; i++) {
+            int firstConsumption = consumption.peek();
+            int lastFuel = fuel.peek();
+            int result = lastFuel - firstConsumption;
+
+            if (result >= neededFuelList.get(i)) {
+                reachedAltitudes++;
+                System.out.printf("John has reached: Altitude %d%n", reachedAltitudes);
+                printList.add("Altitude " + reachedAltitudes);
+                neededFuelList.remove(0);
+                consumption.poll();
+                fuel.pop();
+                i--;
+
+            } else {
+                System.out.printf("John did not reach: Altitude %d%n", reachedAltitudes+1);
+                break;
+            }
+
+        }
+
+        if (neededFuelList.isEmpty()) {
+            System.out.println("John has reached all the altitudes and managed to reach the top!");
+        } else {
+            if (reachedAltitudes == 0) {
+                System.out.printf("John failed to reach the top.%nJohn didn't reach any altitude.");
+            } else {
+                System.out.println("John failed to reach the top.");
+                System.out.println("Reached altitudes: " + String.join(", ",printList));
+
+            }
+        }
+
+
+    }
+}
