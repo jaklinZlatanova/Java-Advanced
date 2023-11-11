@@ -1,0 +1,66 @@
+import java.util.*;
+import java.util.stream.Collectors;
+
+public class P01TempleOfDoom {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        String toolsLine = scanner.nextLine();
+        String subsLine = scanner.nextLine();
+        String challengesLine = scanner.nextLine();
+
+        Queue<Integer> tools = new ArrayDeque<>();
+        Stack<Integer> substances = new Stack<>();
+        List<Integer> challenges = new ArrayList<>();
+
+        Arrays.stream(toolsLine.split("\\s+"))
+                .map(Integer::parseInt)
+                .forEach(tools::offer);
+        Arrays.stream(subsLine.split("\\s+"))
+                .map(Integer::parseInt)
+                .forEach(substances::push);
+        Arrays.stream(challengesLine.split("\\s+"))
+                .map(Integer::parseInt)
+                .forEach(challenges::add);
+
+        while (!tools.isEmpty() && !substances.isEmpty()){
+
+            int firstTool = tools.poll();
+            int lastSubstance = substances.pop();
+            int result = firstTool * lastSubstance;
+
+            if (challenges.contains(result)){
+                int indexToRemove = challenges.indexOf(result);
+                    challenges.remove(indexToRemove);
+                }else{
+                   tools.offer( firstTool+1);
+                   substances.push(lastSubstance-1);
+                    if (substances.peek()==0){
+                        substances.pop();
+                    }
+                }
+
+        }
+        if (!challenges.isEmpty()){
+            System.out.println("Harry is lost in the temple. Oblivion awaits him.");
+            //System.out.println("Challenges: " + challenges.stream().map(Object::toString).collect(Collectors.joining(", ")));
+        }else{
+            System.out.println("Harry found an ostracon, which is dated to the 6th century BCE.");
+        }
+
+        if (!tools.isEmpty()){
+            System.out.println("Tools: " + tools.stream().map(String::valueOf).collect(Collectors.joining(", ")));
+        }
+        if (!substances.isEmpty()){
+            System.out.println("Substances: " + substances.stream().map(String::valueOf).collect(Collectors.joining(", ")));
+        }
+        if (!challenges.isEmpty()) {
+            System.out.println("Challenges: " + challenges.stream().map(Object::toString).collect(Collectors.joining(", ")));
+        }
+
+
+
+
+
+    }
+}
