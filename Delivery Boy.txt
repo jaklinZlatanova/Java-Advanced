@@ -1,0 +1,136 @@
+import java.util.Scanner;
+
+public class P02DeliveryBoy {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        String dimensions = scanner.nextLine();
+        int rows = Integer.parseInt(dimensions.split(" ")[0]);
+        int cols = Integer.parseInt(dimensions.split(" ")[1]);
+
+        String[][] neighborhood = new String[rows][cols];
+
+        int boyRow = 0;
+        int boyCol = 0;
+
+        int startRow = 0;
+        int startCol = 0;
+
+        boolean hasLeftTheField = false;
+
+        for (int row = 0; row < rows; row++) {
+            String currentRow = scanner.nextLine();
+            for (int col = 0; col < cols; col++) {
+                neighborhood[row][col] = String.valueOf(currentRow.charAt(col));
+
+                if (neighborhood[row][col].equals("B")) {
+                    boyRow = row;
+                    boyCol = col;
+                    startRow = row;
+                    startCol = col;
+                }
+            }
+
+        }
+        while (true) {
+            String command = scanner.nextLine();
+            if (command.equals("up")) {
+                if (boyRow - 1 >= 0) {
+                    if (neighborhood[boyRow - 1][boyCol].equals("*")) {
+                        continue;
+                    }
+                    if (!neighborhood[boyRow][boyCol].equals("R")) {
+                        neighborhood[boyRow][boyCol] = ".";
+                    }
+                    boyRow--;
+                } else {
+                    if (neighborhood[boyRow][boyCol].equals("-")) {
+                        neighborhood[boyRow][boyCol] = ".";
+                    }
+                    hasLeftTheField = true;
+                    System.out.println("The delivery is late. Order is canceled.");
+                    break;
+                }
+            }
+
+            if (command.equals("down")) {
+                if (boyRow + 1 < neighborhood.length) {
+                    if (neighborhood[boyRow + 1][boyCol].equals("*")) {
+                        continue;
+                    }
+                    if (!neighborhood[boyRow][boyCol].equals("R")) {
+                        neighborhood[boyRow][boyCol] = ".";
+                    }
+                    boyRow++;
+                } else {
+                    if (neighborhood[boyRow][boyCol].equals("-")) {
+                        neighborhood[boyRow][boyCol] = ".";
+                    }
+                    hasLeftTheField = true;
+                    System.out.println("The delivery is late. Order is canceled.");
+                    break;
+                }
+            }
+            if (command.equals("right")) {
+                if (boyCol + 1 < cols) {
+                    if (neighborhood[boyRow][boyCol + 1].equals("*")) {
+                        continue;
+                    }
+                    if (!neighborhood[boyRow][boyCol].equals("R")) {
+                        neighborhood[boyRow][boyCol] = ".";
+                    }
+                    boyCol++;
+                } else {
+                    if (neighborhood[boyRow][boyCol].equals("-")) {
+                        neighborhood[boyRow][boyCol] = ".";
+                    }
+                    hasLeftTheField = true;
+                    System.out.println("The delivery is late. Order is canceled.");
+                    break;
+                }
+            }
+            if (command.equals("left")) {
+                if (boyCol - 1 >= 0) {
+                    if (neighborhood[boyRow][boyCol - 1].equals("*")) {
+                        continue;
+                    }
+                    if (!neighborhood[boyRow][boyCol].equals("R")) {
+                        neighborhood[boyRow][boyCol] = ".";
+                    }
+                    boyCol--;
+                } else {
+                    if (neighborhood[boyRow][boyCol].equals("-")) {
+                        neighborhood[boyRow][boyCol] = ".";
+                    }
+                    hasLeftTheField = true;
+                    System.out.println("The delivery is late. Order is canceled.");
+                    break;
+                }
+            }
+            if (neighborhood[boyRow][boyCol].equals("P")) {
+                System.out.println("Pizza is collected. 10 minutes for delivery.");
+                neighborhood[boyRow][boyCol] = "R";
+                continue;
+            }
+            if (neighborhood[boyRow][boyCol].equals("A")) {
+                neighborhood[boyRow][boyCol] = "P";
+                System.out.println("Pizza is delivered on time! Next order...");
+                break;
+            }
+
+        }
+        if (hasLeftTheField) {
+            neighborhood[startRow][startCol] = " ";
+
+        } else {
+            neighborhood[startRow][startCol] = "B";
+        }
+        for (String[] row : neighborhood) {
+            for (String symbol : row) {
+                System.out.print(symbol);
+            }
+            System.out.println();
+        }
+
+    }
+}

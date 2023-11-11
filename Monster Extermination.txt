@@ -1,0 +1,51 @@
+import java.util.*;
+
+public class P01MonsterExtermination {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        String monstersArmor = scanner.nextLine();
+        String soldierImpact = scanner.nextLine();
+
+        Queue<Integer> armorValue = new ArrayDeque<>();
+        Stack<Integer> strikeStrength = new Stack<>();
+
+        int killedMonsters = 0;
+
+        Arrays.stream(monstersArmor.split(","))
+                .map(Integer::parseInt)
+                .forEach(armorValue::offer);
+        Arrays.stream(soldierImpact.split(","))
+                .map(Integer::parseInt)
+                .forEach(strikeStrength::push);
+
+        while (!armorValue.isEmpty() && !strikeStrength.isEmpty()){
+
+            Integer firstMonsterArmor = armorValue.peek();
+            Integer lastSoldierStrike = strikeStrength.peek();
+
+            if (firstMonsterArmor<=lastSoldierStrike){
+                killedMonsters ++;
+                armorValue.poll();
+                if (lastSoldierStrike-firstMonsterArmor>0){
+                    strikeStrength.pop();
+                    strikeStrength.push(lastSoldierStrike-firstMonsterArmor);
+                }else{
+                    strikeStrength.pop();
+                }
+            }else{
+                strikeStrength.pop();
+                armorValue.poll();
+                armorValue.offer(firstMonsterArmor-lastSoldierStrike);
+            }
+        }
+        if (armorValue.isEmpty()){
+            System.out.println("All monsters have been killed!");
+        }
+        if (strikeStrength.isEmpty()){
+            System.out.println("The soldier has been defeated.");
+        }
+        System.out.printf("Total monsters killed: %d",killedMonsters);
+
+    }
+}
