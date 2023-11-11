@@ -1,0 +1,93 @@
+import java.util.Scanner;
+
+public class P02StickyFingers {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        int fieldSize = Integer.parseInt(scanner.nextLine());
+        String[] commands = scanner.nextLine().split(",");
+        String[][] field = new String[fieldSize][fieldSize];
+
+        int dilRow = 0;
+        int dilCol = 0;
+
+        for (int row = 0; row < fieldSize; row++) {
+            String[]currentRow = scanner.nextLine().split(" ");
+            for (int col = 0; col < fieldSize; col++) {
+                field[row][col] = currentRow[col];
+
+                if (field[row][col].equals("D")){
+                    dilRow = row;
+                    dilCol = col;
+                }
+            }
+
+        }
+
+        int totalMoney = 0;
+        boolean caught = false;
+
+        for (int i = 0; i < commands.length; i++) {
+            switch (commands[i]) {
+
+                case "up":
+                    if (dilRow - 1 >= 0) {
+                        field[dilRow][dilCol] = "+";
+                        dilRow--;
+                    } else {
+                        System.out.println("You cannot leave the town, there is police outside!");
+                    }
+                    break;
+                case "down":
+                    if (dilRow + 1 < fieldSize) {
+                        field[dilRow][dilCol] = "+";
+                        dilRow++;
+                    } else {
+                        System.out.println("You cannot leave the town, there is police outside!");
+                    }
+                    break;
+                case "left":
+                    if (dilCol - 1 >= 0) {
+                        field[dilRow][dilCol] = "+";
+                        dilCol--;
+                    } else {
+                        System.out.println("You cannot leave the town, there is police outside!");
+                    }
+                    break;
+                case "right":
+                    if (dilCol + 1 < fieldSize) {
+                        field[dilRow][dilCol] = "+";
+                        dilCol++;
+                    } else {
+                        System.out.println("You cannot leave the town, there is police outside!");
+                    }
+                    break;
+            }
+
+            if (field[dilRow][dilCol].equals("$")) {
+                System.out.printf("You successfully stole %d$.%n", dilRow * dilCol);
+                totalMoney += dilRow * dilCol;
+
+            }
+            if (field[dilRow][dilCol].equals("P")) {
+                System.out.printf("You got caught with %d$, and you are going to jail.%n", totalMoney);
+                field[dilRow][dilCol] = "#";
+                caught = true;
+                break;
+            }
+            field[dilRow][dilCol] = "D";
+
+        }
+        if (!caught) {
+            System.out.printf("Your last theft has finished successfully with %d$ in your pocket.%n", totalMoney);
+        }
+        for (String[] row : field) {
+            for (String symbol : row) {
+                System.out.print(symbol + " ");
+            }
+            System.out.println();
+        }
+
+    }
+
+}

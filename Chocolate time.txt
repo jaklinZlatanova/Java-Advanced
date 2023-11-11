@@ -1,0 +1,73 @@
+import java.util.*;
+
+public class P01ItsChocolateTime {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        String milkLine = scanner.nextLine();
+        String cocoaLine = scanner.nextLine();
+
+        Queue<Double> milk = new ArrayDeque<>();
+        Stack<Double> cocoa = new Stack<>();
+
+        Arrays.stream(milkLine.split("\\s+"))
+                .map(Double::parseDouble)
+                .forEach(milk::offer);
+        Arrays.stream(cocoaLine.split("\\s+"))
+                .map(Double::parseDouble)
+                .forEach(cocoa::push);
+
+        Map<String,Integer> chocolateMap = new TreeMap<>();
+
+        chocolateMap.put("Milk Chocolate",0);
+        chocolateMap.put("Dark Chocolate",0);
+        chocolateMap.put("Baking Chocolate",0);
+
+        while (!milk.isEmpty() && !cocoa.isEmpty()){
+            double currentMilk = milk.peek();
+            double currentCocoa = cocoa.peek();
+            double cocoaPercentage = currentCocoa/ (currentMilk + currentCocoa) * 100;
+
+            if (cocoaPercentage == 30){
+                chocolateMap.put("Milk Chocolate", chocolateMap.get("Milk Chocolate") + 1);
+                milk.poll();
+                cocoa.pop();
+            }else if(cocoaPercentage==50){
+                chocolateMap.put("Dark Chocolate", chocolateMap.get("Dark Chocolate")+1);
+                milk.poll();
+                cocoa.pop();
+            }else if (cocoaPercentage==100){
+                chocolateMap.put("Baking Chocolate",chocolateMap.get("Baking Chocolate") + 1);
+                milk.poll();
+                cocoa.pop();
+            }else{
+                cocoa.pop();
+                currentMilk +=10;
+                milk.poll();
+                milk.offer(currentMilk);
+            }
+
+        }
+        boolean isTaskCompleted = true;
+        for (Map.Entry<String, Integer> entry : chocolateMap.entrySet()) {
+            if (entry.getValue() == 0){
+                System.out.println("Sorry, but you didn't succeed to prepare all types of chocolates.");
+                isTaskCompleted = false;
+                break;
+            }
+        }
+        if (isTaskCompleted){
+            System.out.println("It’s a Chocolate Time. All chocolate types are prepared.");
+        }
+        chocolateMap.entrySet()
+                .stream()
+                //.sorted(Comparator.comparing(Map.Entry::getKey))
+                .forEach(c -> {
+                            if (c.getValue() > 0) {
+                                System.out.printf("# %s --> %d%n", c.getKey(), c.getValue());
+                            }
+                        }
+                );
+
+    }
+}
